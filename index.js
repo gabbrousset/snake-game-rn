@@ -1,23 +1,18 @@
-import React, { Component } from "react";
-import {
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-} from "react-native";
-import { GameEngine, dispatch } from "react-native-game-engine";
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { GameEngine, dispatch } from 'react-native-game-engine';
 import { getData, setData } from './storageHelpers';
-import { GameLoop } from "./systems";
-import { ThemeContext } from './theme/ThemeContext';
-import config from "./config";
-import { Head } from "./head";
-import { Tail } from "./tail";
-import { Food } from "./food";
+import { GameLoop } from './systems';
+import { SettingsContext } from './settings/SettingsContext';
+import config from './config';
+import { Head } from './head';
+import { Tail } from './tail';
+import { Food } from './food';
 import GameMenu from './gameMenu';
-
+import CustomText from './CustomText';
 
 export default class SnakeApp extends Component {
-    static contextType = ThemeContext;
+    static contextType = SettingsContext;
     constructor(props) {
         super(props);
         this.engine = null;
@@ -31,8 +26,8 @@ export default class SnakeApp extends Component {
             position: [2, 2],
             xSpeed: 1,
             ySpeed: 0,
-            nextMove: 42,
-            updateFrequency: 42,
+            speed: 42,
+            nextMove: 0,
             size: config.CELL_SIZE,
             renderer: <Head />,
         };
@@ -53,16 +48,17 @@ export default class SnakeApp extends Component {
     }
 
     componentDidMount() {
+        console.log(this.context.speed);
         getData('highScoreLocal').then((res) => {
             if (res) {
-                highScore = parseInt(res)
+                highScore = parseInt(res);
                 if (!isNaN(highScore)) {
                     this.setState({
                         highScore,
-                    })
+                    });
                 }
             }
-        })
+        });
     }
 
     randomBetween = (min, max) => {
@@ -71,19 +67,19 @@ export default class SnakeApp extends Component {
 
     onEvent = (e) => {
         switch (e.type) {
-            case "game-over":
+            case 'game-over':
                 this.setState({
                     running: false,
                 });
                 if (this.state.score > this.state.highScore) {
                     this.setState({
-                        highScore: this.state.score
-                    })
+                        highScore: this.state.score,
+                    });
                     setData('highScoreLocal', this.state.score.toString());
                 }
                 break;
 
-            case "eating":
+            case 'eating':
                 this.setState({
                     score: this.state.score + 1,
                 });
@@ -98,7 +94,7 @@ export default class SnakeApp extends Component {
                 position: [2, 2],
                 xSpeed: 1,
                 ySpeed: 0,
-                nextMove: 42,
+                nextMove: 0,
             },
             food: {
                 ...this.food,
@@ -138,7 +134,21 @@ export default class SnakeApp extends Component {
                     running={this.state.running}
                     onEvent={this.onEvent}
                 ></GameEngine>
-                {!this.state.running && <GameMenu restart={this.restart} score={this.state.score} highScore={this.state.highScore} />}
+                {this.state.running ? (
+                    <View style={[styles.backgroundScore]}>
+                        <CustomText style={[styles.backgroundScoreTxt, {
+                            color: this.context.theme.primaryDark,
+                        }]}>
+                            {this.state.score}
+                        </CustomText>
+                    </View>
+                ) : (
+                    <GameMenu
+                        restart={this.restart}
+                        score={this.state.score}
+                        highScore={this.state.highScore}
+                    />
+                )}
             </View>
         );
     }
@@ -147,7 +157,14 @@ export default class SnakeApp extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backgroundScore: {
+        position: 'absolute',
+        zIndex: -10,
+    },
+    backgroundScoreTxt: {
+        fontSize: 300,
     },
 });

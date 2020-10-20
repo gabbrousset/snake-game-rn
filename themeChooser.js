@@ -1,31 +1,31 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import {
     StyleSheet,
     View,
     Text,
     TouchableOpacity,
     FlatList,
-} from "react-native";
-import { ThemeContext } from './theme/ThemeContext';
-import { themesInfo } from "./theme/colorThemes";
-import CustomText from "./CustomText";
+} from 'react-native';
+import { SettingsContext } from './settings/SettingsContext';
+import { themesInfo } from './settings/colorThemes';
+import CustomText from './CustomText';
 
 
 export default function ThemeChooser() {
 
-    const themeContext = useContext(ThemeContext);
+    const settingsContext = useContext(SettingsContext);
 
-    const [selectedId, setSelectedId] = useState(themeContext.theme.id);
+    const [selectedId, setSelectedId] = useState(settingsContext.theme.id);
 
     const handleThemeChange = (id) => {
         setSelectedId(id)
-        themeContext.changeTheme(id)
+        settingsContext.changeTheme(id)
     }
 
     const renderItem = ({ item }) => {
 
-        const backgroundColor = item.id === selectedId ? themeContext.theme.complementary2 : themeContext.theme.primary;
-        const color = item.id === selectedId ? themeContext.theme.complementary : themeContext.theme.complementary;
+        const backgroundColor = item.id === selectedId ? settingsContext.theme.complementary2 : settingsContext.theme.primary;
+        const color = item.id === selectedId ? settingsContext.theme.complementary : settingsContext.theme.complementary;
 
         return(
             <TouchableOpacity onPress={() => handleThemeChange(item.id)} style={[styles.themeItem, {

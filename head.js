@@ -1,9 +1,9 @@
 import React, { Component, PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ThemeContext } from './theme/ThemeContext';
+import { SettingsContext } from './settings/SettingsContext';
 
 class Head extends PureComponent {
-    static contextType = ThemeContext;
+    static contextType = SettingsContext;
     constructor(props) {
         super(props);
     }

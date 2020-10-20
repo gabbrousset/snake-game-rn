@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { ThemeContext } from './theme/ThemeContext';
+import { SettingsContext } from './settings/SettingsContext';
 import SnakeApp from './index.js';
 
 export default class FullView extends Component {
-    static contextType = ThemeContext;
+    static contextType = SettingsContext;
 
     render() {
         return (

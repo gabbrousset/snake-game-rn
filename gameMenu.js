@@ -1,16 +1,17 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
     StyleSheet,
     View,
     Text,
     TouchableOpacity,
-} from "react-native";
-import { ThemeContext } from './theme/ThemeContext';
-import CustomText from "./CustomText";
-import ThemeChooser from "./themeChooser";
+} from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import { SettingsContext } from './settings/SettingsContext';
+import CustomText from './CustomText';
+import ThemeChooser from './themeChooser';
 
 export default class SnakeApp extends Component {
-    static contextType = ThemeContext;
+    static contextType = SettingsContext;
 
     constructor(props) {
         super(props);
@@ -32,13 +33,15 @@ export default class SnakeApp extends Component {
         })
     }
 
+    handleOpenPrivacyPolicy = async () => {
+        WebBrowser.openBrowserAsync('https://trescool.io/privacy');
+    }
+
     render() {
 
         if (!this.state.showSettings) {
             return (
-                <View style={[styles.menu, {
-                    backgroundColor: this.context.theme.primary,
-                }]}>
+                <View style={[styles.menu]}>
                     <TouchableOpacity
                         style={styles.restartButton}
                         onPress={this.toggleSettings}
@@ -80,9 +83,8 @@ export default class SnakeApp extends Component {
         }
 
         return (
-            <View style={[styles.menu, {
-                backgroundColor: this.context.theme.primary,
-            }]}>
+            <>
+            <View style={[styles.menu]}>
                 <TouchableOpacity
                     style={styles.restartButton}
                     onPress={this.toggleSettings}
@@ -92,12 +94,23 @@ export default class SnakeApp extends Component {
                     }]}>x</CustomText>
                 </TouchableOpacity>
                 
-                <CustomText style={[styles.chooseThemetxt, {
+                <CustomText style={[styles.chooseThemeTxt, {
                     color: this.context.theme.complementary,
                 }]}>Choose Theme:</CustomText>
                 
                 <ThemeChooser />
             </View>
+            <TouchableOpacity
+                style={[styles.privacyPolicy]}
+                onPress={this.handleOpenPrivacyPolicy}
+            >
+                <CustomText style={[styles.privacyPolicyTxt, {
+                    color: this.context.theme.complementary,
+                }]}>
+                    Privacy Policy
+                </CustomText>
+            </TouchableOpacity>
+            </>
         )
     }
 }
@@ -106,15 +119,14 @@ export default class SnakeApp extends Component {
 
 const styles = StyleSheet.create({
     menu: {
-        position: "absolute",
+        position: 'absolute',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        alignItems: "center",
+        alignItems: 'center',
         paddingVertical: 50,
         opacity: 0.8,
         borderRadius: 4,
-
     },
     score: {
         marginBottom: 20,
@@ -139,10 +151,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingBottom: 38,
     },
-    chooseThemetxt: {
+    chooseThemeTxt: {
         fontSize: 40,
         textAlign: 'center',
         paddingVertical: 20,
         paddingHorizontal: 30,
+    },
+    privacyPolicy: {
+        textAlign: 'center',
+        position: 'absolute',
+        bottom: 0,
+    },
+    privacyPolicyTxt: {
+        fontSize: 20,
     },
 });

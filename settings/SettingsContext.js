@@ -1,11 +1,11 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native-appearance';
 import { getData, setData } from '../storageHelpers';
 import themes from './colorThemes';
 
-export const ThemeContext = createContext();
+export const SettingsContext = createContext();
 
-export default function ThemeContextProvider(props) {
+export default function SettingsContextProvider(props) {
     const [theme, setTheme] = useState(themes['dark']);
 
     const automaticTheme = useColorScheme();
@@ -38,8 +38,8 @@ export default function ThemeContextProvider(props) {
     }
 
     return (
-        <ThemeContext.Provider value={{theme, changeTheme }}>
+        <SettingsContext.Provider value={{theme, changeTheme }}>
             {props.children}
-        </ThemeContext.Provider>
+        </SettingsContext.Provider>
     )
 }

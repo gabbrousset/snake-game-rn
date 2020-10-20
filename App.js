@@ -1,15 +1,15 @@
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import { AppearanceProvider } from 'react-native-appearance';
-import ThemeContextProvider from './theme/ThemeContext';
+import SettingsContextProvider from './settings/SettingsContext';
 import FullView from './fullView';
 
 export default function App() {
     return (
         <AppearanceProvider>
-            <ThemeContextProvider>
+            <SettingsContextProvider>
                 <FullView />
-            </ThemeContextProvider>
+            </SettingsContextProvider>
         </AppearanceProvider>
     );
 }

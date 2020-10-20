@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import config from './config';
+import { SettingsContext } from './settings/SettingsContext';
 
 const randomBetween = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 const GameLoop = (entities, { touches, dispatch, events, time }) => {
-    // console.log('time', time);
     const head = entities.head;
     const food = entities.food;
     const tail = entities.tail;
-
+    
     touches
         .filter((t) => t.type === 'move')
         .forEach((t) => {
@@ -33,9 +33,9 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
             }
         });
 
-    head.nextMove -= time.delta;
-    if (head.nextMove <= 0) {
-        head.nextMove = head.updateFrequency;
+    head.nextMove += time.delta;
+    if (head.nextMove >= head.speed) {
+        head.nextMove = 0;
 
         const temp_head = [
             head.position[0] + head.xSpeed,
@@ -62,7 +62,6 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
                 head.position[1] === food.position[1]
             ) {
                 dispatch({ type: 'eating' });
-
                 let temp_food = [0, 0];
 
                 do {
@@ -80,8 +79,23 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
         }
     }
 
+    <Test />
+
     return entities;
 };
+
+class Test extends Component{
+    static contextType = SettingsContext;
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        console.log(this.context);
+        return (
+            <></>
+        )
+    }
+}
 
 const borderCollition = (head) => {
     const xPosition = head[0];
