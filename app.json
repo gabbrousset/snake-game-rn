@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Snek",
+    "slug": "snek",
+    "version": "1.0.0",
+    "description": "A minimalistic take on the classical snake game.",
+    "privacy": "public",
+    "orientation": "portrait",
+    "sdkVersion": "39.0.2",
+    "icon": "./assets/icon.png",
+    "platforms": ["ios", "android"],
+    "githubUrl": "https://github.com/GabBrousset/snake-game-rn",
+    "backgroundColor": "#000000",
+    "primaryColor": "#1e1e1e",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1e1e1e"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 5
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.trescool.snek"
+    },
+    "android": {
+      "package": "io.trescool.snek",
+      "versionCode": 1
+    }
+  }
+}
