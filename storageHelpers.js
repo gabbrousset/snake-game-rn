@@ -8,7 +8,7 @@ export const getData = async (key) => {
         }
         return null;
     } catch (err) {
-        console.log(err);
+        console.warn(err);
         return false
     }
 };
@@ -18,7 +18,7 @@ export const setData = async (key, value) => {
         await AsyncStorage.setItem(key, value);
         return true
     } catch (err) {
-        console.log(err);
+        console.warn(err);
         return false
     }
 };

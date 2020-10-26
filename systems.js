@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import config from './config';
 import { SettingsContext } from './settings/SettingsContext';
 
@@ -37,15 +37,20 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
     if (head.nextMove >= head.speed) {
         head.nextMove = 0;
 
-        const temp_head = [
+        let temp_head = [
             head.position[0] + head.xSpeed,
             head.position[1] + head.ySpeed,
         ];
 
         // Check for collitions
-        if (borderCollition(temp_head) || inTail(temp_head, tail.elements)) {
+        if (inTail(temp_head, tail.elements)) {
+            dispatch({ type: 'game-over' });
+        } else if (head.borders && borderCollition(temp_head)) {
             dispatch({ type: 'game-over' });
         } else {
+            if (!head.borders) {
+                temp_head = borderless(temp_head);
+            }
             // Move the tail
             tail.elements.unshift([head.position[0], head.position[1]]);
             while (tail.elements.length > tail.number) {
@@ -78,24 +83,8 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
             }
         }
     }
-
-    <Test />
-
     return entities;
 };
-
-class Test extends Component{
-    static contextType = SettingsContext;
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        console.log(this.context);
-        return (
-            <></>
-        )
-    }
-}
 
 const borderCollition = (head) => {
     const xPosition = head[0];
@@ -103,10 +92,10 @@ const borderCollition = (head) => {
 
     if (xPosition < 0 || yPosition < 0) {
         return true;
-    }
+    };
     if (xPosition >= config.GAME_WIDTH || yPosition >= config.GAME_HEIGHT) {
         return true;
-    }
+    };
 };
 
 const inTail = (item, tail) => {
@@ -117,8 +106,27 @@ const inTail = (item, tail) => {
         const element = tail[i];
         if (element[0] === xPosition && element[1] === yPosition) {
             return true;
-        }
-    }
+        };
+    };
 };
+
+const borderless = (head) => {
+    const xPosition = head[0];
+    const yPosition = head[1];
+
+    if (xPosition < 0) {
+        return [config.GAME_WIDTH, yPosition];
+    };
+    if (yPosition < 0) {
+        return [xPosition, config.GAME_HEIGHT];
+    };
+    if (xPosition >= config.GAME_WIDTH) {
+        return [0, yPosition];
+    };
+    if (yPosition >= config.GAME_HEIGHT) {
+        return [xPosition, 0];
+    };
+    return head;
+}
 
 export { GameLoop };

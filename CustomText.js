@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, StyleSheet } from 'react-native';
-import * as Font from 'expo-font';
+import { SettingsContext } from './settings/SettingsContext';
 
 export default function CustomText(props) {
-    const [loaded] = Font.useFonts({
-        Billy: require('./assets/fonts/Billy/Billy-Regular.ttf'),
-    });
-
-    if (!loaded) {
-        return null;
-    }
-
+    const context = useContext(SettingsContext);
     return (
-        <Text style={[styles.defaultStyle, props.style]}>{props.children}</Text>
+        <Text style={[styles.defaultStyle, {
+            color: context.theme.complementary,
+            opacity: props.hide ? 0 : 1,
+        }, props.style]}>
+            {props.children}
+        </Text>
     );
 }
 

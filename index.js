@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Button } from 'react-native';
 import { GameEngine, dispatch } from 'react-native-game-engine';
 import { getData, setData } from './storageHelpers';
 import { GameLoop } from './systems';
@@ -8,27 +8,32 @@ import config from './config';
 import { Head } from './head';
 import { Tail } from './tail';
 import { Food } from './food';
-import GameMenu from './gameMenu';
+import { Menu } from './menu';
 import CustomText from './CustomText';
+import { showInterstitialAd } from './gameOverAdMob';
 
 export default class SnakeApp extends Component {
     static contextType = SettingsContext;
-    constructor(props) {
+    constructor(props, context) {
         super(props);
         this.engine = null;
         this.state = {
-            running: true,
+            running: false,
+            showFullMenu: true,
             score: 0,
-            highScore: 0,
+            restartsCurrent: 0,
+            restartsAd: context.gameMode.gamesBetweenAds,
+            first: true,
         };
 
         this.head = {
             position: [2, 2],
             xSpeed: 1,
             ySpeed: 0,
-            speed: 42,
             nextMove: 0,
-            size: config.CELL_SIZE,
+            size: 0,
+            speed: context.gameMode.speed,
+            borders: context.gameMode.borders,
             renderer: <Head />,
         };
         this.food = {
@@ -36,7 +41,7 @@ export default class SnakeApp extends Component {
                 this.randomBetween(0, config.GAME_WIDTH - 1),
                 this.randomBetween(0, config.GAME_HEIGHT - 1),
             ],
-            size: config.CELL_SIZE,
+            size: 0,
             renderer: <Food />,
         };
         this.tail = {
@@ -45,20 +50,6 @@ export default class SnakeApp extends Component {
             elements: [],
             renderer: <Tail />,
         };
-    }
-
-    componentDidMount() {
-        console.log(this.context.speed);
-        getData('highScoreLocal').then((res) => {
-            if (res) {
-                highScore = parseInt(res);
-                if (!isNaN(highScore)) {
-                    this.setState({
-                        highScore,
-                    });
-                }
-            }
-        });
     }
 
     randomBetween = (min, max) => {
@@ -70,13 +61,33 @@ export default class SnakeApp extends Component {
             case 'game-over':
                 this.setState({
                     running: false,
+                    first: false,
                 });
-                if (this.state.score > this.state.highScore) {
-                    this.setState({
-                        highScore: this.state.score,
-                    });
-                    setData('highScoreLocal', this.state.score.toString());
+
+                const highScores = this.context.highScores;
+                if (this.state.score > parseInt(highScores[this.context.gameMode.id])) {
+                    highScores[this.context.gameMode.id] = this.state.score.toString();
+                    this.context.changeHighScores(highScores);
                 }
+
+                setTimeout(() => {
+                    if (this.state.restartsCurrent >= this.state.restartsAd) {
+                        showInterstitialAd()
+                        this.setState({
+                            restartsCurrent: 0
+                        });
+                    } else {
+                        this.setState({
+                            restartsCurrent: this.state.restartsCurrent + 1
+                        });
+                    };
+
+                    this.setState({
+                        showFullMenu: true,
+                    });
+
+                }, 1000);
+
                 break;
 
             case 'eating':
@@ -88,27 +99,35 @@ export default class SnakeApp extends Component {
     };
 
     restart = async () => {
-        this.engine.swap({
-            head: {
-                ...this.head,
-                position: [2, 2],
-                xSpeed: 1,
-                ySpeed: 0,
-                nextMove: 0,
-            },
-            food: {
-                ...this.food,
-                position: [
-                    this.randomBetween(0, config.GAME_WIDTH - 1),
-                    this.randomBetween(0, config.GAME_HEIGHT - 1),
-                ],
-            },
-            tail: { ...this.tail, elements: [], number: 3 },
-        });
-        this.setState({
-            running: true,
-            score: 0,
-        });
+        if (this.state.showFullMenu) {
+            this.engine.swap({
+                head: {
+                    ...this.head,
+                    position: [2, 2],
+                    xSpeed: 1,
+                    ySpeed: 0,
+                    speed: this.context.gameMode.speed,
+                    borders: this.context.gameMode.borders,
+                    nextMove: 0,
+                    size: config.CELL_SIZE,
+                },
+                food: {
+                    ...this.food,
+                    position: [
+                        this.randomBetween(0, config.GAME_WIDTH - 1),
+                        this.randomBetween(0, config.GAME_HEIGHT - 1),
+                    ],
+                    size: config.CELL_SIZE,
+                },
+                tail: { ...this.tail, elements: [], number: 3 },
+            });
+            this.setState({
+                running: true,
+                showFullMenu: false,
+                score: 0,
+                restartsAd: this.context.gameMode.gamesBetweenAds,
+            });
+        }
     };
 
     render() {
@@ -133,7 +152,7 @@ export default class SnakeApp extends Component {
                     }}
                     running={this.state.running}
                     onEvent={this.onEvent}
-                ></GameEngine>
+                />
                 {this.state.running ? (
                     <View style={[styles.backgroundScore]}>
                         <CustomText style={[styles.backgroundScoreTxt, {
@@ -143,10 +162,11 @@ export default class SnakeApp extends Component {
                         </CustomText>
                     </View>
                 ) : (
-                    <GameMenu
+                    <Menu
+                        showFullMenu={this.state.showFullMenu}
                         restart={this.restart}
                         score={this.state.score}
-                        highScore={this.state.highScore}
+                        first={this.state.first}
                     />
                 )}
             </View>

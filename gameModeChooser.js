@@ -7,19 +7,19 @@ import {
     FlatList,
 } from 'react-native';
 import { SettingsContext } from './settings/SettingsContext';
-import { themesInfo } from './settings/colorThemes';
+import { gameModesInfo } from './settings/gameModes';
 import CustomText from './CustomText';
 
 
-export default function ThemeChooser() {
+export default function gameModeChooser() {
 
     const settingsContext = useContext(SettingsContext);
 
-    const [selectedId, setSelectedId] = useState(settingsContext.theme.id);
+    const [selectedId, setSelectedId] = useState(settingsContext.gameMode.id);
 
-    const handleThemeChange = (id) => {
+    const handleGameModeChange = (id) => {
         setSelectedId(id)
-        settingsContext.changeTheme(id)
+        settingsContext.changeGameMode(id)
     }
 
     const renderItem = ({ item }) => {
@@ -34,7 +34,7 @@ export default function ThemeChooser() {
         }
 
         return(
-            <TouchableOpacity onPress={() => handleThemeChange(item.id)} style={[styles.themeItem, {
+            <TouchableOpacity onPress={() => handleGameModeChange(item.id)} style={[styles.themeItem, {
                 backgroundColor,
             }]}>
                 <CustomText style={[styles.themeTxt, {
@@ -42,13 +42,18 @@ export default function ThemeChooser() {
                 }]}>
                     {item.name}
                 </CustomText>
+                <CustomText style={[styles.themeDescTxt, {
+                    color,
+                }]}>
+                    {item.desc}
+                </CustomText>
             </TouchableOpacity>
         )
     };
 
     return (
         <FlatList
-            data={themesInfo}
+            data={gameModesInfo}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             extraData={selectedId}
@@ -66,5 +71,9 @@ const styles = StyleSheet.create({
     },
     themeTxt: {
         fontSize: 35,
+    },
+    themeDescTxt: {
+        fontSize: 25,
+        fontFamily: 'Billy-Light',
     },
 });
