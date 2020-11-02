@@ -71,7 +71,6 @@ export default function SettingsContextProvider(props) {
     function changeHighScores(value) {
         // If values were found in Async storage
         if (value) {
-            console.log('user');
             setHighScores(value);
             setData('userHighScores', JSON.stringify(value));
         // If the values are corrupted or dont exist

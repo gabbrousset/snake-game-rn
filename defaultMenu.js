@@ -6,33 +6,55 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { SettingsContext } from './settings/SettingsContext';
 import CustomText from './CustomText';
 import SettingsSVG from './assets/settings.svg';
 import TrophySVG from './assets/trophy.svg';
 
 
+{/* <TouchableOpacity onPress = { ()=> { 
+     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+     or
+     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light) 
+     or
+     Haptics.selectionAsync()
+ } } > </TouchableOpacity> */}
+
+
 export const DefaultMenu = ({ restart, showFullMenu, first, score, setMenu }) => {
     const settingsContext = useContext(SettingsContext);
     return(
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => showFullMenu && setMenu('gameMode')}>
-                <CustomText style={styles.gameModeTxt} hide={!showFullMenu}>GameMode:{'\n'}{settingsContext.gameMode.name}</CustomText>
+            <TouchableOpacity onPress={() => {
+                showFullMenu && setMenu('gameMode')
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) 
+            }}>
+                <CustomText style={styles.gameModeTxt} hide={!showFullMenu}>Change{'\n'}Game Mode{'\n\n'}{settingsContext.gameMode.name}</CustomText>
             </TouchableOpacity>
             <View style={styles.scores}>
                 <CustomText style={styles.scoreTxt}>Best: {parseInt(settingsContext.highScores?.[settingsContext.gameMode.id])}</CustomText>
                 <CustomText style={styles.scoreTxt} hide={first}>Score: {score}</CustomText>
             </View>
-            <TouchableOpacity onPress={restart}>
+            <TouchableOpacity onPress={() => {
+                restart()
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+            }}>
                 <CustomText style={styles.startTxt} hide={!showFullMenu}>Play</CustomText>
             </TouchableOpacity>
             <View style={styles.iconsContainer}>
-                <TouchableOpacity onPress={() => showFullMenu && setMenu('leaderboard')} style={[styles.icon, {
+                <TouchableOpacity onPress={() => {
+                    showFullMenu && setMenu('leaderboard')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) 
+                }} style={[styles.icon, {
                     opacity: showFullMenu ? 1 : 0,
                 }]}>
                     <TrophySVG width={'100%'} height={'100%'} fill={settingsContext.theme.complementary} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => showFullMenu && setMenu('settings')} style={[styles.icon, {
+                <TouchableOpacity onPress={() => {
+                    showFullMenu && setMenu('settings')
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) 
+                }} style={[styles.icon, {
                     opacity: showFullMenu ? 1 : 0,
                 }]}>
                     <SettingsSVG width={'100%'} height={'100%'} fill={settingsContext.theme.complementary} />
@@ -44,9 +66,8 @@ export const DefaultMenu = ({ restart, showFullMenu, first, score, setMenu }) =>
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
         height: '100%',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
     },
     startTxt: {
@@ -55,12 +76,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     scores: {
-        paddingVertical: 20,
+        // paddingVertical: 20,
     },
     scoreTxt: {
         fontSize: 32,
         textAlign: 'center',
-        paddingVertical: 5,
+        // paddingVertical: 5,
     },
     gameModeTxt: {
         fontFamily: 'Billy-Bold',
@@ -71,8 +92,6 @@ const styles = StyleSheet.create({
         width: '50%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        position: 'absolute',
-        bottom: 150,
     },
     icon: {
         width: 40,

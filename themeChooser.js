@@ -47,19 +47,25 @@ export default function ThemeChooser() {
     };
 
     return (
-        <FlatList
-            data={themesInfo}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            extraData={selectedId}
-            scrollEnabled={false}
-        />
+        <View style={styles.container}>
+            <FlatList
+                data={themesInfo}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                extraData={selectedId}
+                // scrollEnabled={false}
+            />
+        </View>
     )
 };
 
 
 
 const styles = StyleSheet.create({
+    container: {
+        // height: '100%',
+        // width: '100%',
+    },
     themeItem: {
         paddingVertical: 10,
         paddingHorizontal: 15,

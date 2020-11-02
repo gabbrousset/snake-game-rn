@@ -11,27 +11,33 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
     const food = entities.food;
     const tail = entities.tail;
     
-    touches
-        .filter((t) => t.type === 'move')
-        .forEach((t) => {
-            if (Math.abs(t.delta.pageX) - Math.abs(t.delta.pageY) > 2) {
-                if (t.delta.pageX > 0 && head.xSpeed != -1) {
-                    head.xSpeed = 1;
-                    head.ySpeed = 0;
-                } else if (head.xSpeed != 1) {
-                    head.xSpeed = -1;
-                    head.ySpeed = 0;
+    if (!head.moving) {
+        touches
+            .filter((t) => t.type === 'move')
+            .forEach((t) => {
+                if (Math.abs(t.delta.pageX) - Math.abs(t.delta.pageY) > 2.5) {
+                    if (t.delta.pageX > 0 && head.xSpeed != -1) {
+                        head.xSpeed = 1;
+                        head.ySpeed = 0;
+                        head.moving = true;
+                    } else if (head.xSpeed != 1) {
+                        head.xSpeed = -1;
+                        head.ySpeed = 0;
+                        head.moving = true;
+                    }
+                } else if (Math.abs(t.delta.pageY) - Math.abs(t.delta.pageX) > 2.5) {
+                    if (t.delta.pageY > 0 && head.ySpeed != -1) {
+                        head.xSpeed = 0;
+                        head.ySpeed = 1;
+                        head.moving = true;
+                    } else if (head.ySpeed != 1) {
+                        head.xSpeed = 0;
+                        head.ySpeed = -1;
+                        head.moving = true;
+                    }
                 }
-            } else if (Math.abs(t.delta.pageY) - Math.abs(t.delta.pageX) > 2) {
-                if (t.delta.pageY > 0 && head.ySpeed != -1) {
-                    head.xSpeed = 0;
-                    head.ySpeed = 1;
-                } else if (head.ySpeed != 1) {
-                    head.xSpeed = 0;
-                    head.ySpeed = -1;
-                }
-            }
-        });
+            });
+    };
 
     head.nextMove += time.delta;
     if (head.nextMove >= head.speed) {
@@ -60,6 +66,7 @@ const GameLoop = (entities, { touches, dispatch, events, time }) => {
             // Move the head
             head.position[0] = temp_head[0];
             head.position[1] = temp_head[1];
+            head.moving = false;
 
             // Check for food
             if (

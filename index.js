@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Button } from 'react-native';
 import { GameEngine, dispatch } from 'react-native-game-engine';
+import * as Haptics from 'expo-haptics';
 import { getData, setData } from './storageHelpers';
 import { GameLoop } from './systems';
 import { SettingsContext } from './settings/SettingsContext';
@@ -34,6 +35,7 @@ export default class SnakeApp extends Component {
             size: 0,
             speed: context.gameMode.speed,
             borders: context.gameMode.borders,
+            moving: false,
             renderer: <Head />,
         };
         this.food = {
@@ -59,6 +61,7 @@ export default class SnakeApp extends Component {
     onEvent = (e) => {
         switch (e.type) {
             case 'game-over':
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning) 
                 this.setState({
                     running: false,
                     first: false,
@@ -91,6 +94,7 @@ export default class SnakeApp extends Component {
                 break;
 
             case 'eating':
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light) 
                 this.setState({
                     score: this.state.score + 1,
                 });
@@ -110,6 +114,7 @@ export default class SnakeApp extends Component {
                     borders: this.context.gameMode.borders,
                     nextMove: 0,
                     size: config.CELL_SIZE,
+                    moving: false,
                 },
                 food: {
                     ...this.food,

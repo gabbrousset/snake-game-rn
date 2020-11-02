@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { SettingsContext } from './settings/SettingsContext';
+import Constants from 'expo-constants'
 import CustomText from './CustomText';
 import ThemeChooser from './themeChooser';
 import config from './config';
@@ -15,11 +16,13 @@ import { DefaultMenu } from './defaultMenu';
 import { SettingsMenu } from './settingsMenu';
 import { GameModeMenu } from './gameModeMenu';
 import { LeaderboardMenu } from './leaderboardMenu';
+import { ButtonText } from './buttonText';
+import * as Haptics from 'expo-haptics';
 
 
 export const Menu = (props) => {
     const settingsContext = useContext(SettingsContext);
-    const [menu, setMenu] = useState('default');
+    const [menu, setMenu] = useState();
     const handleOpenPrivacyPolicy = async () => {
         WebBrowser.openBrowserAsync('https://trescool.io/privacy');
     }
@@ -51,12 +54,28 @@ export const Menu = (props) => {
         };
     }
 
+    const returnMenu = () => {
+        setMenu();
+    }
+
     return(
         <View style={[styles.container, {
             backgroundColor: settingsContext.theme.opacity,
         }]}>
-            <MenuSwitch/>
-            <TouchableOpacity onPress={() => handleOpenPrivacyPolicy} style={styles.privacy}>
+            <View style={styles.buttonBackMenu}>
+                <TouchableOpacity onPress={() => {
+                    returnMenu()
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                }}>
+                    <CustomText hide={!menu} style={styles.backTxt}>
+                        Return
+                    </CustomText>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.menuContainer} >
+                <MenuSwitch/>
+            </View>
+            <TouchableOpacity onPress={() => handleOpenPrivacyPolicy()} style={styles.privacy}>
                 <CustomText style={styles.privacyTxt}>Privacy Policy</CustomText>
             </TouchableOpacity>
         </View>
@@ -66,19 +85,31 @@ export const Menu = (props) => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        flex: 1,
         width: '100%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        paddingTop: Constants.statusBarHeight + 10,
+        paddingBottom: Constants.statusBarHeight,
+    },
+    menuContainer: {
+        flex: 3,
+        width: '100%',
     },
     privacy: {
-        position: 'absolute',
-        top: config.MAX_HEIGHT,
         textAlign: 'center',
     },
     privacyTxt: {
         fontSize: 20,
         fontFamily: 'Billy-Light',
-    }
+        padding: 5,
+    },
+    buttonBackMenu: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    backTxt: {
+        fontSize:30,
+        fontFamily: 'Billy-Light',
+    },
 });

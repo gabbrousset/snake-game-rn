@@ -52,19 +52,25 @@ export default function gameModeChooser() {
     };
 
     return (
-        <FlatList
-            data={gameModesInfo}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            extraData={selectedId}
-            scrollEnabled={false}
-        />
+        <View style={styles.container}>
+            <FlatList
+                data={gameModesInfo}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                extraData={selectedId}
+                // scrollEnabled={false}
+            />
+        </View>
     )
 };
 
 
 
 const styles = StyleSheet.create({
+    container: {
+        // height: '100%',
+        // width: '100%',
+    },
     themeItem: {
         paddingVertical: 10,
         paddingHorizontal: 15,

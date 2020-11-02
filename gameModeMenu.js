@@ -10,14 +10,9 @@ import GameModeChooser from './gameModeChooser';
 import { ButtonText } from './buttonText'
 
 
-export const GameModeMenu = (props) => {
-    const returnMenu = () => {
-        props.setMenu();
-    }
-
+export const GameModeMenu = () => {
     return(
         <View style={styles.container}>
-            <ButtonText text={'Return'} callback={returnMenu} />
             <CustomText style={styles.changeGameModeTxt}>Change{'\n'}GameMode:</CustomText>
             <View style={styles.gameModeChooser}>
                 <GameModeChooser />
@@ -28,17 +23,16 @@ export const GameModeMenu = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
         alignItems: 'center',
+        height:'100%',
     },
     changeGameModeTxt: {
         fontSize: 38,
         fontFamily: 'Billy-Bold',
+        paddingVertical: 30,
     },
     gameModeChooser: {
-        paddingVertical: 30,
         width: '80%',
+        flex: 1,
     }
 });

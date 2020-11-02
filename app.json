@@ -2,7 +2,7 @@
   "expo": {
     "name": "Snek",
     "slug": "snek",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "description": "A minimalistic take on the classical snake game.",
     "privacy": "public",
     "orientation": "portrait",
@@ -19,7 +19,7 @@
       "backgroundColor": "#1e1e1e"
     },
     "updates": {
-      "fallbackToCacheTimeout": 5
+      "fallbackToCacheTimeout": 15
     },
     "assetBundlePatterns": [
       "**/*"
@@ -27,12 +27,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "io.trescool.snek",
-      "buildNumber": "1.1.0"
+      "buildNumber": "1.1.2"
     },
     "android": {
       "package": "io.trescool.snek",
       "versionCode": 2,
-      "permissions": []
+      "permissions": [ "VIBRATE" ]
     },
     "packagerOpts": {
       "config": "metro.config.js",

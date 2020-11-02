@@ -10,14 +10,9 @@ import ThemeChooser from './themeChooser';
 import { ButtonText } from './buttonText'
 
 
-export const SettingsMenu = (props) => {
-    const returnMenu = () => {
-        props.setMenu();
-    }
-
+export const SettingsMenu = () => {
     return(
         <View style={styles.container}>
-            <ButtonText text={'Return'} callback={returnMenu} />
             <CustomText style={styles.changeThemeTxt}>Change Theme:</CustomText>
             <View style={styles.themeChooser}>
                 <ThemeChooser />
@@ -28,17 +23,16 @@ export const SettingsMenu = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
         alignItems: 'center',
+        height:'100%',
     },
     changeThemeTxt: {
         fontSize: 38,
         fontFamily: 'Billy-Bold',
+        paddingVertical: 30,
     },
     themeChooser: {
-        paddingVertical: 30,
         width: '80%',
+        flex: 1,
     }
 });
